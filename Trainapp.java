@@ -1,49 +1,45 @@
 import java.util.*;
 
-// Train Class using HashMap
+// Bogie Class
+class Bogie {
+    String id;
+    int capacity;
+
+    public Bogie(String id, int capacity) {
+        this.id = id;
+        this.capacity = capacity;
+    }
+}
+
+// Comparator for sorting by capacity
+class CapacityComparator implements Comparator<Bogie> {
+    public int compare(Bogie b1, Bogie b2) {
+        return b2.capacity - b1.capacity; 
+    }
+}
+
+// Train Class
 class Train {
     HashMap<String, Integer> bogieMap = new HashMap<>();
 
-    // Add Bogie with Capacity
     void addBogie(String id, int capacity) {
-        if (bogieMap.containsKey(id)) {
-            System.out.println("❌ Bogie already exists!");
-        } else {
-            bogieMap.put(id, capacity);
-            System.out.println("✅ Bogie added with capacity.");
-        }
+        bogieMap.put(id, capacity);
     }
 
-    // Remove Bogie
-    void removeBogie(String id) {
-        if (bogieMap.remove(id) != null) {
-            System.out.println("✅ Bogie removed.");
-        } else {
-            System.out.println("❌ Bogie not found.");
-        }
-    }
+    void displaySorted() {
+        List<Bogie> list = new ArrayList<>();
 
-    // Get Capacity
-    void getCapacity(String id) {
-        if (bogieMap.containsKey(id)) {
-            System.out.println("Capacity of " + id + " = " + bogieMap.get(id));
-        } else {
-            System.out.println("❌ Bogie not found.");
-        }
-    }
-
-    // Display All Bogies
-    void displayAll() {
-        if (bogieMap.isEmpty()) {
-            System.out.println("No bogies available!");
-            return;
-        }
-System.out.println("just examp;le")
-        System.out.println("🚆 Bogie Details:");
+        // Convert map → list
         for (Map.Entry<String, Integer> entry : bogieMap.entrySet()) {
-            System.out.println("ID: " + entry.getKey() +
-                    ", Capacity: " + entry.getValue());
-                    
+            list.add(new Bogie(entry.getKey(), entry.getValue()));
+        }
+
+        // Sort using Comparator
+        Collections.sort(list, new CapacityComparator());
+
+        System.out.println("🚆 Bogies sorted by capacity (High → Low):");
+        for (Bogie b : list) {
+            System.out.println("ID: " + b.id + ", Capacity: " + b.capacity);
         }
     }
 }
@@ -55,12 +51,10 @@ public class Trainapp {
         Train train = new Train();
 
         while (true) {
-            System.out.println("\n--- UC6 Menu ---");
+            System.out.println("\n--- UC7 Menu ---");
             System.out.println("1. Add Bogie");
-            System.out.println("2. Remove Bogie");
-            System.out.println("3. Get Capacity");
-            System.out.println("4. Display All");
-            System.out.println("5. Exit");
+            System.out.println("2. Display Sorted Bogies");
+            System.out.println("3. Exit");
             System.out.print("Enter choice: ");
 
             int ch = sc.nextInt();
@@ -76,20 +70,10 @@ public class Trainapp {
                     break;
 
                 case 2:
-                    System.out.print("Enter Bogie ID: ");
-                    train.removeBogie(sc.nextLine());
+                    train.displaySorted();
                     break;
 
                 case 3:
-                    System.out.print("Enter Bogie ID: ");
-                    train.getCapacity(sc.nextLine());
-                    break;
-
-                case 4:
-                    train.displayAll();
-                    break;
-
-                case 5:
                     System.out.println("Exiting...");
                     return;
 
