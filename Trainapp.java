@@ -4,7 +4,7 @@ import java.util.*;
 // Passenger Bogie Class
 class PassengerBogie {
     String id;
-    String type; // Sleeper, AC Chair, First Class
+    String type;
     int capacity;
 
     public PassengerBogie(String id, String type, int capacity) {
@@ -20,43 +20,59 @@ class PassengerBogie {
     }
 }
 
-// Train Class with ArrayList
+// Train Class using Set + List
 class Train {
     ArrayList<PassengerBogie> bogies = new ArrayList<>();
+    HashSet<String> bogieIds = new HashSet<>();
 
-    // Add Bogie
+    // Add Bogie 
     void addBogie(PassengerBogie b) {
+        if (!bogieIds.add(b.id)) { 
+            System.out.println("❌ Duplicate Bogie ID! Not allowed.");
+            return;
+        }
+
         bogies.add(b);
-        System.out.println("Bogie added successfully!");
+        System.out.println("✅ Bogie added successfully!");
     }
 
     // Remove Bogie
     void removeBogie(String id) {
-        boolean removed = bogies.removeIf(b -> b.id.equals(id));
-        if (removed)
-            System.out.println("Bogie removed successfully!");
-        else
-            System.out.println("Bogie not found!");
-    }
+        boolean found = false;
 
-    // Check if Bogie Exists
-    void checkBogie(String id) {
-        for (PassengerBogie b : bogies) {
+        Iterator<PassengerBogie> it = bogies.iterator();
+        while (it.hasNext()) {
+            PassengerBogie b = it.next();
             if (b.id.equals(id)) {
-                System.out.println("Bogie exists:");
-                b.display();
-                return;
+                it.remove();
+                bogieIds.remove(id);
+                found = true;
+                System.out.println("✅ Bogie removed successfully!");
+                break;
             }
         }
-        System.out.println("Bogie not found!");
+
+        if (!found) {
+            System.out.println("❌ Bogie not found!");
+        }
     }
 
-    // Display All Bogies
+    // Check Bogie Exists
+    void checkBogie(String id) {
+        if (bogieIds.contains(id)) {
+            System.out.println("✅ Bogie exists in train.");
+        } else {
+            System.out.println("❌ Bogie does not exist.");
+        }
+    }
+
+    // Display All
     void displayAll() {
         if (bogies.isEmpty()) {
             System.out.println("No bogies in train!");
             return;
         }
+
         for (PassengerBogie b : bogies) {
             b.display();
         }
@@ -70,11 +86,11 @@ public class Trainapp {
         Train train = new Train();
 
         while (true) {
-            System.out.println("\n--- UC2 Menu ---");
-            System.out.println("1. Add Passenger Bogie");
+            System.out.println("\n--- UC3 Menu ---");
+            System.out.println("1. Add Bogie");
             System.out.println("2. Remove Bogie");
             System.out.println("3. Check Bogie");
-            System.out.println("4. Display All Bogies");
+            System.out.println("4. Display All");
             System.out.println("5. Exit");
             System.out.print("Enter choice: ");
 
@@ -89,6 +105,7 @@ public class Trainapp {
                     String type = sc.nextLine();
                     System.out.print("Enter Capacity: ");
                     int cap = sc.nextInt();
+
                     train.addBogie(new PassengerBogie(id, type, cap));
                     break;
 
@@ -116,5 +133,3 @@ public class Trainapp {
         }
     }
 }
-
-
